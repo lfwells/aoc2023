@@ -1,3 +1,8 @@
-import * as fs from 'fs';
+import run from "./boilerplate.js";
 
-const input = fs.readFileSync("day2input").toString();
+run(2, (input) => 
+{
+    //code goes here
+    
+    
+});
