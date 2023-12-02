@@ -26,10 +26,18 @@ if(!dayStats || dayStats.length == 0)
 }
 
 //display the stats
-console.log(`Stats for day ${day}:`);
+console.log(`\nStats for day ${day}:`);
 console.log(`\tRuns: ${dayStats?.length ?? 0}`);
-console.log(`\tFastest: ${dayStats?.reduce((acc, cur) => acc.time < cur.time ? acc : cur)?.time ?? 0} seconds`);
-console.log(`\tSlowest: ${dayStats?.reduce((acc, cur) => acc.time > cur.time ? acc : cur)?.time ?? 0} seconds`);
-console.log(`\tAverage: ${dayStats?.reduce((acc, cur) => acc + cur.time, 0) / (dayStats?.length ?? 0)} seconds`);
-console.log(`\tTotal: ${dayStats?.reduce((acc, cur) => acc + cur.time, 0)} seconds`);
+//console.log(`\tFastest: ${dayStats?.reduce((acc, cur) => acc.time < cur.time ? acc : cur)?.time ?? 0} seconds`);
+//console.log(`\tSlowest: ${dayStats?.reduce((acc, cur) => acc.time > cur.time ? acc : cur)?.time ?? 0} seconds`);
+//first run
+//time taken between first and last run
+let firstRun = new Date(dayStats[0].date);
+let lastRun = new Date(dayStats[dayStats.length-1].date)
+//calculate duration between first and last run
+let duration = Math.abs(lastRun - firstRun);
+//convert to minutes
+duration = duration / 1000 / 60;
+console.log(`\tDuration: ${duration.toFixed(2)} minutes\n`);
+console.log(`\tFirst Run: ${dayStats?.reduce((acc, cur) => acc.date < cur.date ? acc : cur)?.date ?? 0}`);
 console.log(`\tLast Run: ${dayStats?.reduce((acc, cur) => acc.date > cur.date ? acc : cur)?.date ?? 0}`);
