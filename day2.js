@@ -29,7 +29,7 @@ run(2, (input) =>
             for (var action of actions)
             {
                 let [number, color] = action;
-                console.log({game, color, number});
+                //console.log({game, color, number});
                 if (limits[color] < number) valid = false;
             }
         }
@@ -40,5 +40,24 @@ run(2, (input) =>
     let sums = valid.filter(v => v[1]);
     let s = sum(sums.map(v => parseInt(v[0])));
     console.log({s});
-    
+   
+    //part 2
+    let maxes = Object.values(games).map(sets =>
+    {
+        let max = {};
+        for (var actions of sets)
+        {
+            for (var action of actions)
+            {
+                let [number, color] = action;
+                number = parseInt(number);
+                if (max[color] == null || max[color] < number) max[color] = number;
+            }
+        }
+        return max;
+    });
+    console.log({maxes});
+
+    let powers = maxes.map(colours => Object.values(colours).reduce((a,b) => a*b));
+    console.log({powers, s: sum(powers)});
 });
