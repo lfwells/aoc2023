@@ -6,7 +6,7 @@ export default function run(day, f)
     console.log(`--- Day ${day} (Run #${runNumber}) ---`);
     var startTime = process.hrtime();
 
-    const input = fs.readFileSync("day1.input").toString();
+    const input = fs.readFileSync(`day${day}.input`).toString();
     f(input);
     
     var elapsedSeconds = parseHrtimeToSeconds(process.hrtime(startTime));
