@@ -20,7 +20,7 @@ run(5, (input) =>
         map = input[map];
         for (var mapItem of map)
         {
-            if (n >= mapItem.start && n <= mapItem.end)
+            if (n >= mapItem.start && n < mapItem.end)
             {
                 n -= mapItem.diff;
                 return n;
@@ -28,11 +28,14 @@ run(5, (input) =>
         }
         return n;
     }
+
+    let memo = {};
     
     function seedToLocation(seed)
     {
+        //if (memo[seed] != undefined) return memo[seed];
         
-        return traverse(
+        var r = traverse(
                     traverse(
                         traverse(
                             traverse(
@@ -48,6 +51,8 @@ run(5, (input) =>
                         "temperature-to-humidity map"),
                     "humidity-to-location map"
                 );
+        //memo[seed] = r;
+        return r;
     }
 
     let locations = input.seeds.map(seedToLocation);
@@ -56,14 +61,20 @@ run(5, (input) =>
     //part 2
     let seeds = input.seeds;
     let allSeeds = [];
+    let lowestSeed = [];
     for (var i = 0; i < seeds.length; i+=2)
     {
-        for (var s = seeds[i]; s <= seeds[i]+seeds[i+1]; s++)
+        console.log({i});
+        lowestSeed[i] = Number.MAX_SAFE_INTEGER;
+        for (var s = seeds[i]; s < seeds[i]+seeds[i+1]; s++)
         {
-            allSeeds.push(s);
+            let value = seedToLocation(s);
+            //console.log({value, s});
+            lowestSeed[i] = Math.min(lowestSeed[i], value);
         }
+        
+        console.log({i,lowest:lowestSeed[i]});
     }
-    console.log({seeds,allSeeds});
-    locations = allSeeds.map(seedToLocation);
-    console.log(Math.min(...locations));
+    lowestSeed = lowestSeed.filter(x => x != undefined);
+    console.log(Math.min(...lowestSeed));
 });
