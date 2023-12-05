@@ -8,49 +8,48 @@ run(5, (input) =>
     for (var key in input)
     {
         input[key] = input[key].trim().split("\r\n").map(list => parseInts(list.split(" ")));
+        if (key != "seeds")
+        {
+            input[key] = input[key].map(s => ({ start: s[1], end: s[1]+s[2], diff: s[1]-s[0] }));
+        }
     }
     input.seeds = input.seeds[0];
-    console.log({input});
 
-    let soil = {};
-    let fertilizer = {};
-    let water = {};
-    let light = {};
-    let temperature =  {};
-    let humidity = {};
-    let location = {};
-
-    function generateMap(map, destination)
+    function traverse(n, map)
     {
-        function handleLine(sourceStart, destinationStart, length)
+        map = input[map];
+        for (var mapItem of map)
         {
-            for (var i = 0; i < length; i++)
+            if (n >= mapItem.start && n <= mapItem.end)
             {
-                destination[destinationStart + i] = sourceStart + i;
+                n -= mapItem.diff;
+                return n;
             }
         }
-        map.forEach(line => handleLine(line[0], line[1], line[2]));
-
-        //now fill in the others
-        for (var i = 0; i < 100; i++)
-        {
-            if (!destination[i])
-            {
-                destination[i] = i;
-            }
-        }
+        return n;
+    }
+    
+    function seedToLocation(seed)
+    {
+        
+        return traverse(
+                    traverse(
+                        traverse(
+                            traverse(
+                                traverse(
+                                        traverse(
+                                            traverse(
+                                                seed, 
+                                            "seed-to-soil map"),
+                                        "soil-to-fertilizer map"),
+                                    "fertilizer-to-water map"),
+                                "water-to-light map"),
+                            "light-to-temperature map"),
+                        "temperature-to-humidity map"),
+                    "humidity-to-location map"
+                );
     }
 
-    generateMap(input["seed-to-soil map"], soil);
-    generateMap(input["soil-to-fertilizer map"], fertilizer);
-    generateMap(input["fertilizer-to-water map"], water);
-    generateMap(input["water-to-light map"], light);
-    generateMap(input["light-to-temperature map"], temperature);
-    generateMap(input["temperature-to-humidity map"], humidity);
-    generateMap(input["humidity-to-location map"], location);
-
-    //console.log({input:input["seed-to-soil map"], soil});
-    console.log(input.seeds.map(seed => soil[seed]));
-    let locations = input.seeds.map(seed => location[humidity[temperature[light[water[fertilizer[soil[seed]]]]]]]);
-    console.log({locations, min: Math.min(...locations)});
+    let locations = input.seeds.map(seedToLocation);
+    console.log(Math.min(...locations));
 });
