@@ -1,6 +1,9 @@
 import run from "./boilerplate.js";
 
+//251777324
+
 const cardValues = {
+    "J":1,//part 2
     "2":2,
     "3":3,
     "4":4,
@@ -10,12 +13,21 @@ const cardValues = {
     "8":8,
     "9":9,
     "T":10,
-    "J":11,
-    "Q":12,
-    "K":13,
-    "A":14
+    "Q":11,
+    "K":12,
+    "A":13
 }
 
+
+    const types = {
+        1: "high card",
+        2: "pair",
+        3: "two pair",
+        4: "3-of-a-kind",
+        5: "full house",
+        6: "4-of-a-kind",
+        7: "5-of-a-kind",
+    }
 run(7, (input) => 
 {
     //code goes here
@@ -50,9 +62,60 @@ run(7, (input) =>
         if (keys.length == 4) return 2; //pair
         return 1; //high card
     }
+    
+    function getTypeWithJoker(cards){
+        
+        let keys = Object.keys(cards);
+        let jokerCount = 0;
+        if (cards["1"]) jokerCount = cards["1"];
+        keys = keys.filter(x => x != "1");
+        
+        if (keys.length == 1 || keys.length == 0) return 7; //5-of-a-kind
+        if (keys.length == 2) {
+            if (jokerCount >= 2)
+            {
+                return 6; //4-of-a-kind
+            }
+            if (jokerCount == 1) 
+            {
+                if (keys.some(x => cards[x] == 3)) return 6; //4-of-a-kind
+                return 5; //full house
+            }
+            if (keys.some(x => cards[x] == 4)) return 6; //4-of-a-kind
+            else return 5; //full house
+        }
+        if (keys.length == 3) {
+            if (jokerCount >= 2)
+            {
+                return 4; //3-of-a-kind
+            }
+            if (jokerCount == 1) 
+            {
+                return 3; //two pair
+            }
+            if (keys.some(x => cards[x] == 3)) return 4; //3-of-a-kind
+            else return 3; //two pair
+        }
+        if (keys.length == 4) {
+            return 2; //pair
+        }
+        return 1; //high card
+    }
+    
+    hands = hands.map(h => ({...h, jokerCount:h.cards["1"] || 0}));
+    /*
+    //debugging
+    hands = hands.filter(h => h.jokerCount == 2 && Object.keys(h.cards).filter(k => k != "1").length == 2).map(h => {
+        let {hand,bid,cards} = h;
+        return {...h, type: types[getTypeWithJoker(cards)]};
+    });
+    console.log(hands);
+    return; 
+    */
+
     hands = hands.map(h => {
         let {hand,bid,cards} = h;
-        return {...h, type: getType(cards)};
+        return {...h, type: getTypeWithJoker(cards)};
     });
 
     //sort by type then cards value in order
@@ -71,7 +134,7 @@ run(7, (input) =>
 
     //include rank in the object
     hands = hands.map((h,i) => ({...h, rank: i+1}));
-
-    console.log({step1: Object.values(hands).reduce((acc, {rank, bid}) => acc + rank*bid, 0)});
+    //hands = hands.filter(h => h.jokerCount == 2);
+    console.log({h:hands.map(({handString, type, bid, rank}) => ({handString, t:types[type], bid, rank})), step1: Object.values(hands).reduce((acc, {rank, bid}) => acc + rank*bid, 0)});
     
 });
