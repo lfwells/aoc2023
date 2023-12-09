@@ -69,3 +69,10 @@ export const isSuperset = function(set, subset) {
     }
     return _difference;
   }
+
+  //https://www.30secondsofcode.org/js/s/lcm/
+  const gcd = (a, b) => a ? gcd(b % a, a) : b;
+
+  const lcm = (a, b) => a * b / gcd(a, b);
+
+  export const lcmArray = (arr) => arr.reduce((a, b) => lcm(a, b));
