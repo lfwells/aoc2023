@@ -52,13 +52,59 @@ run(10, (input) =>
         }
         return null;
     }
-
+    /*
     let path = traverse(startingPos[0], startingPos[1], []);
     let mid = Math.floor(path.length/2);
     console.log({path, mid});
-    return;
+    */
+    
+    //part 2
+    let empties = {};
+    for (var y = 0; y < map.length; y++)
+    {
+        for (var x = 0; x < map[0].length; x++)
+        {
+            let key = `${x},${y}`;
+            if (map[y][x] == ".") empties[key] = [x,y];
+        }
+    }
 
-    //traverse all starting points neighbours
-    let search = allNeighbours.map(n => traverse(startingPos[0] + n[0], startingPos[1] + n[1]));
-    console.log({search, path});
+    const traverseEscape = (x,y,visited) =>
+    {
+        if (x < 0 || y < 0 || x >= map[0].length || y >= map.length) return true;
+        
+        let key = `${x},${y}`;
+        let pipe = map[y][x];
+        if (pipe != ".") return false;
+        if (visited.has(key)) return false;
+        visited.add(key);
+
+        return allNeighbours.some(n => traverseEscape(x+n[0], y+n[1], visited));
+    }
+
+    let enclosed = [];
+    while (Object.values(empties).length > 0)
+    {
+        let tryKey = Object.keys(empties)[0];
+        let [x,y] = empties[tryKey];
+        allNeighbours.forEach((n) => {
+            let s = new Set();
+            let result = traverseEscape(x+n[0],y+n[1],s);
+            console.log({result, s});
+            if (enclosed)
+            {
+                //add all items from s to enclosed
+                enclosed = [...enclosed, ...s];
+            }
+            //remove all items from s from the empties array
+            for (var item of s)
+            {
+                console.log({item});
+                delete empties[item];
+            }
+            console.log({empties});
+        });
+    }
+
+    console.log({enclosed, l:enclosed.length});
 });
