@@ -15,6 +15,18 @@ export const parseInts = function(arr)
     return arr.map(n => parseInt(n));
 }
 
+export const repeat = function(input, n, sep)
+{
+  let r = "";
+  for (var i = 0; i < n; i++)
+  {
+    r+=input;
+    if (sep)
+    r+=sep;
+  }
+  return r;
+}
+
 
 export const mod = function(n, m) {
   //console.log(typeof(n), n)

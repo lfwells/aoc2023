@@ -1,8 +1,10 @@
 import run from "./boilerplate.js";
-import {sum} from "./utils.js"
+import {sum,repeat} from "./utils.js"
 
 run(12, (input) => 
 {
+    let part2 = true;
+
     let regex = /#+/g;
     function getMatches(line)
     {
@@ -20,7 +22,17 @@ run(12, (input) =>
     }
 
     //code goes heres
-    let lines = input.split("\n").map(line => line.split(" ")).map(([lava,sizes]) => ({lava,sizes:sizes.split(",").map(size => parseInt(size))}));
+    let lines = input.split("\n").map(line => line.split(" "));
+    
+    if (part2)
+    {
+        lines = lines.map(l => [
+            repeat(l[0] ,5),
+            repeat(l[1], 5, ",")
+        ]);
+    }
+    lines = lines.map(([lava,sizes]) => ({lava,sizes:sizes.split(",").map(size => parseInt(size))}));
+    
     let result = lines.map(line => {
         //regex to find posiitions of ?
         let regexWildcard = /\?/g;
