@@ -1,5 +1,5 @@
 import run from "./boilerplate.js";
-import { mapStr, parse2D, sum } from "./utils.js";
+import { mapStr, parse2D, sum, hashCode } from "./utils.js";
 
 run(14, (input) => 
 {
@@ -112,19 +112,56 @@ run(14, (input) =>
     let rowValues = map.map((row, y) => sum(row.map(c => c == ROCK ? height-y : 0)));
     console.log({part1:sum(rowValues)});
 
-    const NO = 3;//1000000000;
+    let memodMaps = new Set();
+
+    const NO = 1000000000;
     let spin = [itrNorth,itrWest,itrSouth,itrEast];
     let spinDIR = [NORTH,WEST,SOUTH,EAST];
-    let every = NO/10000;
-    for (var n = 0; n < NO; n++)
+
+    /* //testing for sample input of 3
+    for (var n = 0; n < 3; n++)
     {
-        if (n % every == 0) console.log("spin", n, n/NO*100, "%");
         for (var s = 0; s < spin.length; s++)
         {
             moveAll(map, spin[s], spinDIR[s]);
         }
     }
-    console.log(mapStr(map));
+    console.log(mapStr(map)); return;*/
+
+    for (var n = 0; n < NO; n++)
+    {
+        for (var s = 0; s < spin.length; s++)
+        {
+            moveAll(map, spin[s], spinDIR[s]);
+        }
+        let memo = (mapStr(map));
+        if (memodMaps[memo] != undefined)
+        {
+            console.log("CYCLE!?", n, memodMaps[memo]);
+
+            // now need to find the cycle length
+            let cycleLength = n - memodMaps[memo];
+            // now increment n by the cycle length until we reach the end
+            do
+            {
+                n += cycleLength;
+            }
+            while (n < NO - cycleLength);
+            console.log({nIsNow:n});
+
+            //now just spin some more until we reach the end
+            for (; n < NO-1; n++)
+            {
+                for (var s = 0; s < spin.length; s++)
+                {
+                    moveAll(map, spin[s], spinDIR[s]);
+                }
+            }
+            
+            console.log({nIsNow:n});
+        }
+        memodMaps[memo] = n;
+    }
 
     rowValues = map.map((row, y) => sum(row.map(c => c == ROCK ? height-y : 0)));
     console.log({part2:sum(rowValues)});

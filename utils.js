@@ -94,3 +94,16 @@ export const isSuperset = function(set, subset) {
   export const parse2D = (input) => input.split("\n").map(line => line.split(""));
   export const get2D = (map,x,y) => map[y][x];
   export const mapStr = (map) => map.map(line => line.join("")).join("\n");
+
+  //https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+  export const hashCode = (str) => {
+    var hash = 0,
+      i, chr;
+    if (str.length === 0) return hash;
+    for (i = 0; i < str.length; i++) {
+      chr = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+  }
