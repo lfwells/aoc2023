@@ -92,14 +92,18 @@ run(14, (input) =>
         return newPos;
     }
 
-    for (var rockPos of itrNorth(map))
+    let moveAll = (map, itr, dir) =>
     {
-        let newPos = rockPos;
-        do{
-            newPos = move(map, newPos, NORTH);
+        for (var rockPos of itr(map))
+        {
+            let newPos = rockPos;
+            do{
+                newPos = move(map, newPos, dir);
+            }
+            while (newPos !== false);
         }
-        while (newPos !== false);
-    }
+    };
+    moveAll(map, itrNorth, NORTH);
     
     console.log("\n");
     console.log(mapStr(map));
@@ -107,4 +111,21 @@ run(14, (input) =>
     let height = map.length;
     let rowValues = map.map((row, y) => sum(row.map(c => c == ROCK ? height-y : 0)));
     console.log({part1:sum(rowValues)});
+
+    const NO = 3;//1000000000;
+    let spin = [itrNorth,itrWest,itrSouth,itrEast];
+    let spinDIR = [NORTH,WEST,SOUTH,EAST];
+    let every = NO/10000;
+    for (var n = 0; n < NO; n++)
+    {
+        if (n % every == 0) console.log("spin", n, n/NO*100, "%");
+        for (var s = 0; s < spin.length; s++)
+        {
+            moveAll(map, spin[s], spinDIR[s]);
+        }
+    }
+    console.log(mapStr(map));
+
+    rowValues = map.map((row, y) => sum(row.map(c => c == ROCK ? height-y : 0)));
+    console.log({part2:sum(rowValues)});
 });
