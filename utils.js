@@ -88,3 +88,9 @@ export const isSuperset = function(set, subset) {
   const lcm = (a, b) => a * b / gcd(a, b);
 
   export const lcmArray = (arr) => arr.reduce((a, b) => lcm(a, b));
+
+  export const match = (arr1, arr2) => arr1.every((v,i) => v === arr2[i]);
+
+  export const parse2D = (input) => input.split("\n").map(line => line.split(""));
+  export const get2D = (map,x,y) => map[y][x];
+  export const mapStr = (map) => map.map(line => line.join("")).join("\n");
